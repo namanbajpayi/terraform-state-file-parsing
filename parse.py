@@ -8,7 +8,7 @@ aws_ec2=[]
 aws_sg=[]
 aws_rt=[]
 aws_rta=[]
-aws_igw=[]
+
 
 #variables
 data = json.load(f)
@@ -67,11 +67,7 @@ for i in aws_rt:
 
 if flag_ig==True and flag_sg==True:
     print("public ip of instance is " + public_ip)    
-    print("sg is " + sg)   
-    print("subnet is "+ subnet) 
     print("instance is "+ instance)
-    print("route table is "+ route_table)
-    print("igw is "+ igw)
 
 f.close()
 
