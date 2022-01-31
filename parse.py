@@ -8,7 +8,7 @@ aws_ec2=[]
 aws_sg=[]
 aws_rt=[]
 aws_rta=[]
-
+aws_igw=[]
 
 #variables
 data = json.load(f)
@@ -33,7 +33,9 @@ for i in data['resources']:
         aws_rt.append(i)
     if i['type']=='aws_route_table_association':
         aws_rta.append(i) 
-
+    if i['type']=='aws_internet_gateway':
+        aws_igw.append(i)
+         
 #seperating the subnet,security group of the instance having public ip          
 for i in aws_ec2:
     if i['instances'][0]['attributes']['public_ip']!='':
@@ -56,14 +58,17 @@ for i in aws_rta:
     if subnet == i['instances'][0]['attributes']['subnet_id']: 
         route_table = i['instances'][0]['attributes']['route_table_id'] 
         break   
+         
 # comparing route table and cidr fetched above in route table's list to check wheteher it is going via the internet gateway or not
 for i in aws_rt:
     if route_table == i['instances'][0]['attributes']['id'] and cidr==i['instances'][0]['attributes']['route'][0]['cidr_block']:
         igw=i['instances'][0]['attributes']['route'][0]['gateway_id']
-        if igw!='':
-            flag_ig=True
-            break
 
+#comparing gateway id that we fetched is a internet gatway or NAT
+for i in aws_igw:
+    if igw==i['instances'][0]['attributes']['id']:
+        flag_ig=True
+        break
 
 if flag_ig==True and flag_sg==True:
     print("public ip of instance is " + public_ip)    
